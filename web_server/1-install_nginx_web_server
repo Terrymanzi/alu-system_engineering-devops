@@ -7,7 +7,7 @@ apt-get install -y nginx
 service nginx start
 
 # Create the HTML file with the required content
-echo 'Holberton School' > /var/www/html/index.html
+echo "Holberton School" > /var/www/html/index.html
 
 # Ensure nginx is listening on port 80
 if ! grep -q "listen 80" /etc/nginx/sites-available/default; then
