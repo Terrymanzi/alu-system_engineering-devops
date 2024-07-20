@@ -8,6 +8,6 @@ sudo ufw allow 'Nginx HTTP'
 sh -c 'echo "Hello World!" > /var/www/html/index.html'
 
 # Add rewrite rule to redirect /redirect_me to https://www.youtube.com/@cryptotechcoder
-sed -i '/server_name _;/a location /redirect_me { return 301 https://www.youtube.com/@cryptotechcoder; }' /etc/nginx/sites-available/default
+sed -i '/server_name _;/a location /redirect_me { return 301 }' /etc/nginx/sites-available/default
 
 service nginx restart
