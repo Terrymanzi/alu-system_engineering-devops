@@ -1,17 +1,32 @@
 #!/usr/bin/env bash
+
 # Update package list and install nginx
 apt-get update
 apt-get install -y nginx
 
-# Start nginx service
+# Ensure nginx is enabled and started
 service nginx start
 
 # Create the HTML file with the required content
-echo 'Holberton School for the win!' > /var/www/html/index.html
+echo 'Holberton School' > /var/www/html/index.html
 
-# Make sure nginx is listening on port 80
-sed -i 's/listen 80 default_server;/listen 80;/' /etc/nginx/sites-available/default
-sed -i 's/listen \[::\]:80 default_server;/listen \[::\]:80;/' /etc/nginx/sites-available/default
+# Make sure nginx is listening on port 80 (default configuration should be correct)
+# Check if Nginx is already set to listen on port 80
+if ! grep -q "listen 80" /etc/nginx/sites-available/default; then
+    # Modify the configuration to ensure it listens on port 80
+    sed -i 's/listen 80 default_server;/listen 80;/' /etc/nginx/sites-available/default
+    sed -i 's/listen \[::\]:80 default_server;/listen \[::\]:80;/' /etc/nginx/sites-available/default
+fi
 
-# Restart nginx service
+# Reload nginx to apply any changes
 service nginx reload
+
+# Check if Nginx is running and accepting traffic on port 80
+curl_output=$(curl -s http://localhost)
+
+if [[ "$curl_output" == *"Holberton School"* ]]; then
+    echo "Nginx is correctly configured and serving the expected content."
+else
+    echo "Nginx configuration or content is incorrect."
+    exit 1
+fi
