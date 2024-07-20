@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
 # Update package list and install nginx
 apt-get update
 apt-get install -y nginx
@@ -9,18 +10,20 @@ service nginx start
 # Create the HTML file with the required content
 echo 'Holberton School' > /var/www/html/index.html
 
-# Make sure nginx is listening on port 80 (default configuration should be correct)
-# Check if Nginx is already set to listen on port 80
+# Ensure nginx is listening on port 80
 if ! grep -q "listen 80" /etc/nginx/sites-available/default; then
-    # Modify the configuration to ensure it listens on port 80
     sed -i 's/listen 80 default_server;/listen 80;/' /etc/nginx/sites-available/default
     sed -i 's/listen \[::\]:80 default_server;/listen \[::\]:80;/' /etc/nginx/sites-available/default
 fi
 
-# Reload nginx to apply any changes
-service nginx reload
+# Explicitly set the root directory in the default site configuration
+sed -i 's|root /var/www/html;|root /var/www/html;|' /etc/nginx/sites-available/default
+sed -i 's|index.nginx-debian.html|index.html|' /etc/nginx/sites-available/default
 
-# Check if Nginx is running and accepting traffic on port 80
+# Restart nginx to apply changes
+service nginx restart
+
+# Verify that the correct content is served
 curl_output=$(curl -s http://localhost)
 
 if [[ "$curl_output" == *"Holberton School"* ]]; then
